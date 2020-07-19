@@ -15,51 +15,42 @@ namespace FluentFTP {
 				int code;
 
 				if (Code != null && Code.Length > 0 &&
-					int.TryParse(Code[0].ToString(), out code)) {
-					return (FtpResponseType)code;
+				    int.TryParse(Code[0].ToString(), out code)) {
+					return (FtpResponseType) code;
 				}
 
 				return FtpResponseType.None;
 			}
 		}
 
-		string m_respCode;
+		private string m_respCode;
+
 		/// <summary>
 		/// The status code of the response
 		/// </summary>
 		public string Code {
-			get {
-				return m_respCode;
-			}
-			set {
-				m_respCode = value;
-			}
+			get => m_respCode;
+			set => m_respCode = value;
 		}
 
-		string m_respMessage;
+		private string m_respMessage;
+
 		/// <summary>
 		/// The message, if any, that the server sent with the response
 		/// </summary>
 		public string Message {
-			get {
-				return m_respMessage;
-			}
-			set {
-				m_respMessage = value;
-			}
+			get => m_respMessage;
+			set => m_respMessage = value;
 		}
 
-		string m_infoMessages;
+		private string m_infoMessages;
+
 		/// <summary>
 		/// Informational messages sent from the server
 		/// </summary>
 		public string InfoMessages {
-			get {
-				return m_infoMessages;
-			}
-			set {
-				m_infoMessages = value;
-			}
+			get => m_infoMessages;
+			set => m_infoMessages = value;
 		}
 
 		/// <summary>
@@ -68,11 +59,10 @@ namespace FluentFTP {
 		public bool Success {
 			get {
 				if (Code != null && Code.Length > 0) {
-					int i;
 
 					// 1xx, 2xx, 3xx indicate success
 					// 4xx, 5xx are failures
-					if (int.TryParse(Code[0].ToString(), out i) && i >= 1 && i <= 3) {
+					if (Code[0] == '1' || Code[0] == '2' || Code[0] == '3') {
 						return true;
 					}
 				}
@@ -91,16 +81,16 @@ namespace FluentFTP {
 		/// </summary>
 		public string ErrorMessage {
 			get {
-				string message = "";
+				var message = "";
 
 				if (Success) {
 					return message;
 				}
 
 				if (InfoMessages != null && InfoMessages.Length > 0) {
-					foreach (string s in InfoMessages.Split('\n')) {
-						string m = Regex.Replace(s, "^[0-9]{3}-", "");
-						message += (m.Trim() + "; ");
+					foreach (var s in InfoMessages.Split('\n')) {
+						var m = Regex.Replace(s, "^[0-9]{3}-", "");
+						message += m.Trim() + "; ";
 					}
 				}
 
